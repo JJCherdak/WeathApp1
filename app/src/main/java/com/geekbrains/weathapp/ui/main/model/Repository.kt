@@ -1,4 +1,4 @@
-package com.geekbrains.weathapp.ui.main
+package com.geekbrains.weathapp.ui.main.model
 
     interface Repository {
         fun getWeatherFromServer(): Weather

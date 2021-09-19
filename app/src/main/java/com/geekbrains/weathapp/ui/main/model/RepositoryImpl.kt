@@ -1,4 +1,6 @@
-package com.geekbrains.weathapp.ui.main
+package com.geekbrains.weathapp.ui.main.model
+
+import com.geekbrains.weathapp.ui.main.model.Repository
 
 class RepositoryImpl : Repository {
 

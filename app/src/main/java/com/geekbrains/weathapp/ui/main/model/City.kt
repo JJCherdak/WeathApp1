@@ -1,4 +1,4 @@
-package com.geekbrains.weathapp.ui.main
+package com.geekbrains.weathapp.ui.main.model
 
 data class City(
     val city: String,

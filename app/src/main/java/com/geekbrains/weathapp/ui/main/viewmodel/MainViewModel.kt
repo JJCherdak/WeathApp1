@@ -1,8 +1,10 @@
-package com.geekbrains.weathapp.ui.main
+package com.geekbrains.weathapp.ui.main.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.geekbrains.weathapp.ui.main.model.Repository
+import com.geekbrains.weathapp.ui.main.model.RepositoryImpl
+import com.geekbrains.weathapp.ui.main.viewmodel.AppState
 import java.lang.Thread.sleep
 
 class MainViewModel(
@@ -19,7 +21,7 @@ class MainViewModel(
     private fun getDataFromLocalSource() {
         liveDataToObserve.value = AppState.Loading
         Thread {
-            sleep(1000)
+            sleep(5000)
             liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))
         }.start()
     }
