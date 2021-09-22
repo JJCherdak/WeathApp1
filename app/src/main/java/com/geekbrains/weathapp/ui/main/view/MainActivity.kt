@@ -1,9 +1,9 @@
-package com.geekbrains.weathapp
+package com.geekbrains.weathapp.ui.main.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.geekbrains.weathapp.R
 import com.geekbrains.weathapp.databinding.MainActivityBinding
-import com.geekbrains.weathapp.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
