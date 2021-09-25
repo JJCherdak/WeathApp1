@@ -45,8 +45,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(inflater, container, false)
-        _binding = FragmentMainBinding.bind(view)
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.getRoot()
     }
 
