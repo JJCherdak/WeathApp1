@@ -23,7 +23,7 @@
         android:src="@mipmap/ic_russia_round"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="@dimen/fab_icon_size" />
+        app:maxImageSize="@dimen/fab_icon_size"/>
 
     <FrameLayout
         android:id="@+id/mainFragmentLoadingLayout"
