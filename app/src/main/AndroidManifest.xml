@@ -17,6 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".ui.main.model.DetailsService"></service>
+            <service android:name=".ui.main.model.DetailsService"></service>
+
     </application>
+
+
 
 </manifest>
