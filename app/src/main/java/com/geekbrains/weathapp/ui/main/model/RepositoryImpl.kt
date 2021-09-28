@@ -1,10 +1,8 @@
 package com.geekbrains.weathapp.ui.main.model
 
-import com.geekbrains.weathapp.ui.main.model.Repository
-
 class RepositoryImpl : Repository {
 
-    override fun getWeatherFromServer() = Weather()
+    override fun getWeatherFromServer() = Weather(icon = fact.icon)
 
     override fun getWeatherFromLocalStorageRus() = getRussianCities()
 
