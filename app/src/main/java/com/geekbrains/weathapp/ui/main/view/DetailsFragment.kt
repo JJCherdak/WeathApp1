@@ -99,6 +99,8 @@ class DetailsFragment : Fragment() {
 
     private fun setWeather(weather: Weather) {
         val city = weatherBundle.city
+        saveCity(city, weather)
+
         binding.cityName.text = city.city
         binding.cityCoordinates.text = String.format(
             getString(R.string.city_coordinates),
@@ -132,12 +134,24 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    private fun saveCity(
+        city: City,
+        weather: Weather
+    ) {
+        viewModel.saveCityToDB(
+            Weather(
+                city,
+                weather.temperature,
+                weather.feelsLike,
+                weather.condition,
+                icon = null
+            )
+        )
+    }
+
 
 }
 
-    private fun setWeather(weather: Weather) {
-
-    }
 
 
 

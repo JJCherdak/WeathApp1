@@ -1,5 +1,6 @@
 package com.geekbrains.weathapp.ui.main.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +18,16 @@ import com.geekbrains.weathapp.ui.main.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_main.*
 
+private const val IS_WORLD_KEY = "LIST_OF_TOWNS_KEY"
+
 class MainFragment : Fragment() {
+
     interface OnItemViewClickListener {
 
         fun onItemViewClick(weather: Weather)
     }
 
+    private var isDataSetWorld: Boolean = false
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
@@ -55,19 +60,42 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
-      //  viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getWeatherFromLocalSourceRus()
+        viewModel.getLiveData().observe(viewLifecycleOwner, { renderData(it) })
+
+        showListOfTowns()
     }
 
-    private fun changeWeatherDataSet() =
-        if (isDataSetRus) {
-            viewModel.getWeatherFromLocalSourceWorld()
-            mainFragmentFAB.setImageResource(R.mipmap.ic_russia_round)
-        } else {
+    private fun showListOfTowns() {
+        activity?.let {
+            if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_WORLD_KEY, false)) {
+                changeWeatherDataSet()
+            } else {
+                viewModel.getWeatherFromLocalSourceRus()
+            }
+        }
+    }
+
+    private fun changeWeatherDataSet() {
+        if (isDataSetWorld) {
             viewModel.getWeatherFromLocalSourceRus()
-            mainFragmentFAB.setImageResource(R.mipmap.ic_russia_round)
-        }.also { isDataSetRus = !isDataSetRus }
+            binding.mainFragmentFAB.setImageResource(R.mipmap.ic_russia_round)
+        } else {
+            viewModel.getWeatherFromLocalSourceWorld()
+            binding.mainFragmentFAB.setImageResource(R.mipmap.ic_russia_round)
+        }
+        isDataSetWorld = !isDataSetWorld
+
+        saveListOfTowns(isDataSetWorld)
+    }
+
+    private fun saveListOfTowns(isDataSetWorld: Boolean) {
+        activity?.let {
+            with(it.getPreferences(Context.MODE_PRIVATE).edit()) {
+                putBoolean(IS_WORLD_KEY, isDataSetWorld)
+                apply()
+            }
+        }
+    }
 
     private fun View.showSnackBar(
         text: String,
