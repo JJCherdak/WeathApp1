@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.location.*
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,16 +13,25 @@ import android.provider.ContactsContract
 import android.support.annotation.RequiresApi
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.geekbrains.weathapp.R
 import com.geekbrains.weathapp.databinding.MainActivityBinding
 import com.geekbrains.weathapp.ui.main.contentprovider.ContentProviderFragment
+import java.io.IOException
 
 private val Any.contentResolver: ContentResolver
     get() {}
+
 const val REQUEST_CODE = 42
+private const val REFRESH_PERIOD = 60000L
+    private const val MINIMAL_DISTANCE = 100f
+
 class MainActivity(val it: Context) : AppCompatActivity() {
 
     private val context: Any
@@ -64,8 +74,125 @@ class MainActivity(val it: Context) : AppCompatActivity() {
                 }
                 true
             }
+            R.id.get_location -> {
+                permissionGeoResult.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+
+            }
+
+            R.id.map -> {
+                supportFragmentManager.apply {
+                    beginTransaction()
+                        .add(R.id.container, MapsFragment.newInstance())
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private val permissionGeoResult =
+        registerForActivityResult(ActivityResultContracts.RequestPermission){ result ->
+            when{
+                result -> getLocation()
+                !ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) -> {
+                    Toast.makeText(
+                        this
+                    "Go to app setting and enable permission",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> Toast.makeText(this, "T_T", Toast.LENGTH_LONG).show()
+            }
+
+
+        }
+
+    private fun getLocation() {
+        val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            locationManager.getProvider(LocationManager.GPS_PROVIDER)?.let {
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    REFRESH_PERIOD,
+                    MINIMAL_DISTANCE,
+                    object : LocationListener {
+
+                        override fun onLocationChanged(location: Location) {
+                            getAdressByLocation(location)
+                        }
+
+                        override fun onStatusChanged(
+                            provider: String?,
+                            status: Int,
+                            extras: Bundle?
+                        ) {
+
+
+                        }
+
+                        override fun onProviderEnabled(provider: String) {
+
+                        }
+
+                        override fun onProviderDisabled(provider: String) {
+
+                        }
+                    }
+                )
+            }
+
+        } else {
+            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+            if(location == null){
+                Toast.makeText(
+                    this,
+                    "невозможно определить локацию",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else{
+                getAdressByLocation(location)
+            }
+        }
+
+    }
+
+
+    private fun getAdressByLocation(location: Location) {
+        val geocoder = Geocoder(this)
+
+        Thread{
+            try {
+                val address = geocoder.getFromLocation(
+                    location.latitude,
+                    location.longitude,
+                    1
+                )
+
+                binding.container.post {
+                  AlertDialog.Builder(this)
+                      .setMessage(address[0].getAddressLine(0))
+                      .setCancelable(true)
+                      .show()
+                }
+
+            } catch (e: IOException){
+                e.printStackTrace()
+            }
+
+        }
+
+    }
+
+
+    private fun registerForActivityResult(requestPermission: Any): Any {
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
