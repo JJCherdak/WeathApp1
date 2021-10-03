@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_content_provider"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="contacts"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_history"
+        android:title="history"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/get_location"
+        android:title="locatoin"
+        android:icon="@drawable/ic_baseline_location_city_24"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/map"
+        android:title="history"
+        android:icon="@drawable/ic_baseline_maps_ugc_24"
+        android:showAsAction="always" />
+
+
+</menu>
